@@ -18,15 +18,15 @@ const multer = Multer({
   storage: FirebaseStorage({
     bucketName,
     credentials: {
-      clientEmail: process.env.CLIENT_EMAIL,
-      privateKey: process.env.PRIVATE_KEY,
-      projectId: process.env.PROJECT_ID
+      clientEmail: config.client_email,
+      privateKey: config.private_key,
+      projectId: config.project_id
     }
   })
 })
 
 const storage = new Storage({
-  projectId: process.env.PROJECT_ID,
+  projectId: config.project_id,
   keyFilename: process.env.CONFIG_PATH
 });
 
