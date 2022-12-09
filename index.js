@@ -45,16 +45,19 @@ app.post('/upload', multer.single('files'), (req, res) => {
 
 app.get("/download/:id", async(req, res) => {
 
-  const fileName = req.params.id
-  await storage.bucket(bucketName).file(fileName).download({}).then(buffer => {
-    var readStream = new stream.PassThrough();
-    readStream.end(buffer[0]);
-    readStream.pipe(res);
-  })
-  .catch(err => {
-    console.log("Error : ", err)
-    res.send("File not found ")
-  })
+  try{
+    const fileName = req.params.id
+    await storage.bucket(bucketName).file(fileName).download({}).then(buffer => {
+      var readStream = new stream.PassThrough();
+      readStream.end(buffer[0]);
+      readStream.pipe(res);
+    })
+  }
+  catch(err){
+    res.send(err.message)
+  }
+
+  
 
 });
 
