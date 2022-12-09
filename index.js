@@ -1,13 +1,34 @@
 var express = require('express');
 var fs  = require('fs');
+const Multer = require('multer')
+const FirebaseStorage = require('multer-firebase-storage')
 const fileMiddleware = require('express-multipart-file-parser')
+const {Storage} = require('@google-cloud/storage');
+const stream = require('stream');
 
 
 var app = express();
 var cors = require('cors')
+const bucketName = 'ellodms.appspot.com'
+
+const multer = Multer({
+  storage: FirebaseStorage({
+    bucketName,
+    credentials: {
+      clientEmail: process.env.CLIENT_EMAIL,
+      privateKey: process.env.PRIVATE_KEY,
+      projectId: process.env.PROJECT_ID
+    }
+  })
+})
+
+const storage = new Storage({
+  projectId: process.env.PROJECT_ID,
+  keyFilename: 'config.json'
+});
 
 app.use(cors())
-app.use(fileMiddleware)
+// app.use(fileMiddleware)
 
 app.set('view engine', 'ejs');
 
@@ -15,24 +36,22 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.post('/upload', function (req, res, next) {
-
-    var docName = req.files[0].originalname
-    var newPath = __dirname + "/uploads/" + docName;
-
-    fs.createWriteStream(newPath).write(req.files[0].buffer)
-    res.send({ url: "download/" + docName});
-   
+app.post('/upload', multer.single('files'), (req, res) => {
+  res.status(201).json({ url: "download/" + req.file.originalname })
 })
 
-app.get("/download/:id", function (req, res) {
-  
-    // The res.download() talking file path to be downloaded
-    res.download(__dirname + "/uploads/"+req.params.id, function (err) {
-      if (err) {
-        console.log(err);
-      }
-    });
+app.get("/download/:id", async(req, res) => {
+
+  const fileName = req.params.id
+  await storage.bucket(bucketName).file(fileName).download({}).then(buffer => {
+    var readStream = new stream.PassThrough();
+    readStream.end(buffer[0]);
+    readStream.pipe(res);
+  })
+  .catch(err => {
+    res.send("File not found")
+  })
+
 });
 
 app.listen(5000);
