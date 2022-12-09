@@ -11,6 +11,7 @@ const config = require(process.env.CONFIG_PATH)
 var app = express();
 var cors = require('cors')
 const bucketName = 'ellodms.appspot.com'
+config.private_key = config.private_key.replace(/\\n/g, '\n'),
 
 console.log("CONFIG : ", config)
 
@@ -19,7 +20,7 @@ const multer = Multer({
     bucketName,
     credentials: {
       clientEmail: config.client_email,
-      privateKey: config.private_key.replace(/\\n/g, '\n'),
+      privateKey: config.private_key,
       projectId: config.project_id
     }
   })
