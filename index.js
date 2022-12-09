@@ -11,9 +11,8 @@ const config = require(process.env.CONFIG_PATH)
 var app = express();
 var cors = require('cors')
 const bucketName = 'ellodms.appspot.com'
-config.private_key = config.private_key.replace(/\\n/g, '\n'),
+config.private_key = config.private_key.replace(/\\n/g, '\n')
 
-console.log("CONFIG : ", config)
 
 const multer = Multer({
   storage: FirebaseStorage({
@@ -53,7 +52,8 @@ app.get("/download/:id", async(req, res) => {
     readStream.pipe(res);
   })
   .catch(err => {
-    res.send("File not found")
+    console.log("Error : ", err)
+    res.send("File not found ")
   })
 
 });
