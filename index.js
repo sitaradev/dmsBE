@@ -6,7 +6,6 @@ const fileMiddleware = require('express-multipart-file-parser')
 const {Storage} = require('@google-cloud/storage');
 const stream = require('stream');
 
-
 var app = express();
 var cors = require('cors')
 const bucketName = 'ellodms.appspot.com'
@@ -24,7 +23,7 @@ const multer = Multer({
 
 const storage = new Storage({
   projectId: process.env.PROJECT_ID,
-  keyFilename: 'config.json'
+  keyFilename: process.env.CONFIG_PATH
 });
 
 app.use(cors())

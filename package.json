@@ -2,8 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "start": "node index",
-    "postinstall": "node setup"
+    "start": "node index"
   },
   "engines": {
     "node": "14"
