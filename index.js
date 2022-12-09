@@ -5,10 +5,13 @@ const FirebaseStorage = require('multer-firebase-storage')
 const fileMiddleware = require('express-multipart-file-parser')
 const {Storage} = require('@google-cloud/storage');
 const stream = require('stream');
+require('dotenv').config()
 
 var app = express();
 var cors = require('cors')
 const bucketName = 'ellodms.appspot.com'
+
+console.log("CONFIG : ", process.env.CONFIG_PATH)
 
 const multer = Multer({
   storage: FirebaseStorage({
