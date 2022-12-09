@@ -19,7 +19,7 @@ const multer = Multer({
     bucketName,
     credentials: {
       clientEmail: config.client_email,
-      privateKey: config.private_key,
+      privateKey: config.private_key.replace(/\\n/g, '\n'),
       projectId: config.project_id
     }
   })
